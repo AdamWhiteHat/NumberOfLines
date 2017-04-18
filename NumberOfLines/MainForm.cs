@@ -34,19 +34,37 @@ namespace NumberOfLines
 				return;
 			}
 
-			IEnumerable<string> foundFiles = Directory.EnumerateFiles(dirInfo.FullName, "*.cs", SearchOption.AllDirectories);
+			string searchpattern = tbSearchPattern.Text;
+			if (string.IsNullOrWhiteSpace(searchpattern))
+			{
+				searchpattern = "*.cs";
+			}
+
+			IEnumerable<string> foundFiles = Directory.EnumerateFiles(dirInfo.FullName, searchpattern, SearchOption.AllDirectories);
 
 			int numberOfLines = foundFiles.Select(fn => GetNumberOfLines(fn)).Sum();
 
 			labelNumberOfLines.Text = numberOfLines.ToString();
 		}
 
+		private string browseRootFolder = string.Empty;
 		private string GetFolderDialog()
 		{
 			FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+			if (!string.IsNullOrWhiteSpace(browseRootFolder))
+			{
+				folderDialog.SelectedPath = browseRootFolder;
+			}
+			else
+			{
+				folderDialog.RootFolder = Environment.SpecialFolder.MyDocuments;
+			}
+
 			if (folderDialog.ShowDialog() == DialogResult.OK)
 			{
-				return folderDialog.SelectedPath;
+				string selectedPath = folderDialog.SelectedPath;
+				browseRootFolder = Path.GetFullPath(selectedPath);
+				return selectedPath;
 			}
 			return string.Empty;
 		}

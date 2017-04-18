@@ -33,19 +33,23 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.labelNumberOfLines = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
+			this.tbSearchPattern = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
 			// tbFolderPath
 			// 
+			this.tbFolderPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.tbFolderPath.Location = new System.Drawing.Point(12, 32);
 			this.tbFolderPath.Name = "tbFolderPath";
 			this.tbFolderPath.ReadOnly = true;
-			this.tbFolderPath.Size = new System.Drawing.Size(340, 20);
+			this.tbFolderPath.Size = new System.Drawing.Size(206, 20);
 			this.tbFolderPath.TabIndex = 0;
 			// 
 			// btnBrowse
 			// 
-			this.btnBrowse.Location = new System.Drawing.Point(356, 28);
+			this.btnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnBrowse.Location = new System.Drawing.Point(262, 28);
 			this.btnBrowse.Name = "btnBrowse";
 			this.btnBrowse.Size = new System.Drawing.Size(68, 28);
 			this.btnBrowse.TabIndex = 1;
@@ -80,18 +84,29 @@
 			this.label2.TabIndex = 4;
 			this.label2.Text = "# of lines:";
 			// 
+			// tbSearchPattern
+			// 
+			this.tbSearchPattern.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.tbSearchPattern.Location = new System.Drawing.Point(218, 32);
+			this.tbSearchPattern.Name = "tbSearchPattern";
+			this.tbSearchPattern.Size = new System.Drawing.Size(44, 20);
+			this.tbSearchPattern.TabIndex = 5;
+			this.tbSearchPattern.Text = "*.cs";
+			this.tbSearchPattern.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(428, 91);
+			this.ClientSize = new System.Drawing.Size(334, 91);
+			this.Controls.Add(this.tbSearchPattern);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.labelNumberOfLines);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnBrowse);
 			this.Controls.Add(this.tbFolderPath);
-			this.MaximumSize = new System.Drawing.Size(444, 129);
-			this.MinimumSize = new System.Drawing.Size(444, 129);
+			this.MaximumSize = new System.Drawing.Size(1000, 129);
+			this.MinimumSize = new System.Drawing.Size(300, 129);
 			this.Name = "MainForm";
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -105,6 +120,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label labelNumberOfLines;
 		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TextBox tbSearchPattern;
 	}
 }
 

@@ -1,13 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace NumberOfLines
 {
@@ -18,60 +14,65 @@ namespace NumberOfLines
 			InitializeComponent();
 		}
 
+		#region Methods
+
 		private void btnBrowse_Click(object sender, EventArgs e)
 		{
-			string directoryPath = GetFolderDialog();
-			if (string.IsNullOrWhiteSpace(directoryPath))
+			string folderPath = FolderBrowserHelper.BrowseForFolder();
+
+			if (!string.IsNullOrWhiteSpace(folderPath))
 			{
-				return;
+				SetNumberOfLines(-1);
+				SetFolderPath(folderPath);
+
+				ProcessFileLines(folderPath, GetSearchPattern());
 			}
-
-			tbFolderPath.Text = directoryPath + "\\*";
-
-			DirectoryInfo dirInfo = new DirectoryInfo(directoryPath);
-			if (!dirInfo.Exists)
-			{
-				return;
-			}
-
-			string searchpattern = tbSearchPattern.Text;
-			if (string.IsNullOrWhiteSpace(searchpattern))
-			{
-				searchpattern = "*.cs";
-			}
-
-			IEnumerable<string> foundFiles = Directory.EnumerateFiles(dirInfo.FullName, searchpattern, SearchOption.AllDirectories);
-
-			int numberOfLines = foundFiles.Select(fn => GetNumberOfLines(fn)).Sum();
-
-			labelNumberOfLines.Text = numberOfLines.ToString();
 		}
 
-		private string browseRootFolder = string.Empty;
-		private string GetFolderDialog()
+		private void ProcessFileLines(string folderPath, string searchPattern)
 		{
-			FolderBrowserDialog folderDialog = new FolderBrowserDialog();
-			if (!string.IsNullOrWhiteSpace(browseRootFolder))
-			{
-				folderDialog.SelectedPath = browseRootFolder;
-			}
-			else
-			{
-				folderDialog.RootFolder = Environment.SpecialFolder.MyDocuments;
-			}
+			IEnumerable<string> foundFiles = EnumerateFiles(folderPath, searchPattern);
 
-			if (folderDialog.ShowDialog() == DialogResult.OK)
-			{
-				string selectedPath = folderDialog.SelectedPath;
-				browseRootFolder = Path.GetFullPath(selectedPath);
-				return selectedPath;
-			}
-			return string.Empty;
+			int numberOfLines = foundFiles.Select(fn => NumberOfLines.GetNumberOfLines_Accurate(fn)).Sum();
+
+			SetNumberOfLines(numberOfLines);
 		}
 
-		private int GetNumberOfLines(string filePath)
+		private IEnumerable<string> EnumerateFiles(string rootDirectory, string searchPattern)
 		{
-			return File.ReadLines(filePath).Count();
+			IEnumerable<string> result = new string[] { };
+
+			DirectoryInfo dirInfo = new DirectoryInfo(rootDirectory);
+			if (dirInfo.Exists)
+			{
+				result = Directory.EnumerateFiles(dirInfo.FullName, searchPattern, SearchOption.AllDirectories);
+			}
+
+			return result;
 		}
+
+		#endregion
+
+		#region Form controls getters/setters
+
+		public void SetFolderPath(string folderPath)
+		{
+			if (!string.IsNullOrWhiteSpace(folderPath))
+			{
+				tbFolderPath.Text = folderPath + "\\*";
+			}
+		}
+
+		public string GetSearchPattern()
+		{
+			return string.IsNullOrWhiteSpace(tbSearchPattern.Text) ? "*.cs" : tbSearchPattern.Text;
+		}
+
+		public void SetNumberOfLines(int numberOfLines)
+		{
+			labelNumberOfLines.Text = numberOfLines < 0 ? "" : string.Format("{0:n0}", numberOfLines);
+		}
+
+		#endregion
 	}
 }

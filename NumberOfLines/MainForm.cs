@@ -16,19 +16,6 @@ namespace NumberOfLines
 
 		#region Methods
 
-		private void btnBrowse_Click(object sender, EventArgs e)
-		{
-			string folderPath = FolderBrowserHelper.BrowseForFolder();
-
-			if (!string.IsNullOrWhiteSpace(folderPath))
-			{
-				SetNumberOfLines(-1);
-				SetFolderPath(folderPath);
-
-				ProcessFileLines(folderPath, GetSearchPattern());
-			}
-		}
-
 		private void ProcessFileLines(string folderPath, string searchPattern)
 		{
 			IEnumerable<string> foundFiles = EnumerateFiles(folderPath, searchPattern);
@@ -42,13 +29,42 @@ namespace NumberOfLines
 		{
 			IEnumerable<string> result = new string[] { };
 
-			DirectoryInfo dirInfo = new DirectoryInfo(rootDirectory);
-			if (dirInfo.Exists)
+			if (Directory.Exists(rootDirectory))
 			{
-				result = Directory.EnumerateFiles(dirInfo.FullName, searchPattern, SearchOption.AllDirectories);
+				result = Directory.EnumerateFiles(rootDirectory, searchPattern, SearchOption.AllDirectories);
 			}
 
 			return result;
+		}
+
+		#endregion
+
+		#region WebForm Events
+
+		private void btnBrowse_Click(object sender, EventArgs e)
+		{
+			string folderPath = FolderBrowserHelper.BrowseForFolder();
+
+			if (!string.IsNullOrWhiteSpace(folderPath))
+			{
+				SetNumberOfLines(-1);
+				SetFolderPath(folderPath);
+
+				ProcessFileLines(folderPath, GetSearchPattern());
+			}
+		}
+
+		private void tbFolderPath_TextChanged(object sender, EventArgs e)
+		{
+			ProcessFileLines(tbFolderPath.Text, GetSearchPattern());
+		}
+
+		private void textBox_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.KeyData == Keys.Enter)
+			{
+				ProcessFileLines(tbFolderPath.Text, GetSearchPattern());
+			}
 		}
 
 		#endregion
@@ -59,7 +75,7 @@ namespace NumberOfLines
 		{
 			if (!string.IsNullOrWhiteSpace(folderPath))
 			{
-				tbFolderPath.Text = folderPath + "\\*";
+				tbFolderPath.Text = Path.GetFullPath(folderPath);
 			}
 		}
 
@@ -70,9 +86,10 @@ namespace NumberOfLines
 
 		public void SetNumberOfLines(int numberOfLines)
 		{
-			labelNumberOfLines.Text = numberOfLines < 0 ? "" : string.Format("{0:n0}", numberOfLines);
+			tbNumberOfLines.Text = numberOfLines < 0 ? "" : string.Format("{0:n0}", numberOfLines);
 		}
 
 		#endregion
+
 	}
 }

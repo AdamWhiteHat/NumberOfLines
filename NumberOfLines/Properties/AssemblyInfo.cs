@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NumberOfLines")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
+[assembly: AssemblyCopyright("https://csharpcodewhisperer.blogspot.com/")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

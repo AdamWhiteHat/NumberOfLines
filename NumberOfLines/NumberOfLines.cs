@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -15,10 +16,17 @@ namespace NumberOfLines
 		{
 			IEnumerable<string> lines = File.ReadAllLines(filePath);
 
-			lines = lines.Select(line => line.Replace(" ", "").Replace("\t", "").Replace("{", "").Replace("}", "").Replace(";", "")); // Remove spaces, tabs, single brackets, semicolons
-			lines = lines.Where(s => !s.StartsWith("//")); // Removes comments
-			lines = lines.Where(s => !s.StartsWith("[assembly:")); // Removes [assembly:
-			lines = lines.Where(s => s.Length > 0); // Removes empty lines, or lines that were blanked by above logic
+			lines = lines.Select(line =>
+				line
+				.Replace("{", "").Replace("}", "")
+				.Replace("/*", "").Replace("*/", "")
+				.Trim()
+				); // Remove spaces, tabs, single brackets, semicolons
+			lines = lines.Where(s => !s.StartsWith("//")); // Removes comments			
+			lines = lines.Where(s => !s.StartsWith("#region", StringComparison.InvariantCultureIgnoreCase));
+			lines = lines.Where(s => !s.StartsWith("#endregion", StringComparison.InvariantCultureIgnoreCase));
+			lines = lines.Where(s => !s.StartsWith("[assembly:", StringComparison.InvariantCultureIgnoreCase)); // Removes [assembly:
+			lines = lines.Where(s => !string.IsNullOrWhiteSpace(s)); // Removes empty lines, or lines that were blanked by above logic
 
 			return lines.Count();
 		}
